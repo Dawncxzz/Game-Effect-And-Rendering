@@ -1,0 +1,16 @@
+void SpecTrum(inout half3 albedo,half fresnel,half NdotV,half smoothness,half mask)
+{
+    half ff = max(0.04,pow(fresnel, _SpectrumParam.x));
+    half rough = lerp(1,smoothness,_SpectrumParam.y);
+    ff *= rough;
+    ff *= mask;
+
+    float3 C = float3(0.5,0.5,1);
+    float3 k = float3(0.57735,0.57735,0.57735);
+    float t = NdotV * PI * _SpectrumParam.z;
+    float3 v = C.xyz;
+    C.xyz = v * cos(t) + cross(k, v) * sin(t) + k * dot(k, v) * (1 - cos(t));
+    C.xyz *= _SpectrumParam.w;
+    
+    albedo = lerp(albedo,C.xyz,ff);
+}

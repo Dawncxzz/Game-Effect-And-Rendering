@@ -1,0 +1,63 @@
+
+#pragma kernel CSMain
+
+struct Rain
+{
+    int layer;
+    float3 dir;
+    float3 birth_pos;
+    float3 end_pos;
+    float3 size_offset_pos1;
+    float3 size_offset_pos2;
+    float3 size_offset_pos3;
+};
+
+RWStructuredBuffer<Rain> rain_list;
+RWStructuredBuffer<float3> verts;
+RWStructuredBuffer<float3> normals;
+
+float RAIN_AREA_HALF;
+float3 windzoneDir;
+float3 mBirthPos;
+float3 RAIN_OFFSET;
+
+float TimeInterval;
+
+[numthreads(4,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    
+    if(id.x % 4 == 0)
+    {
+        float3 dir;
+        float3 vert;
+        Rain rain = rain_list[id.x / 4];
+        dir = rain.dir * TimeInterval * 7;
+        dir.x *= windzoneDir.x;
+        dir.z *= windzoneDir.z;
+        vert = verts[id.x] + dir;
+        if (vert.x < rain.end_pos.x + RAIN_AREA_HALF && vert.y > rain.end_pos.y)
+        {
+            verts[id.x] = vert;
+            verts[id.x + 1] += dir;
+            verts[id.x + 2] += dir;
+            verts[id.x + 3] += dir;
+        }
+        else
+        {
+            //Vector3 birth_pos = m_mainCam.position;
+            rain.end_pos = mBirthPos + RAIN_OFFSET;
+            //vert = new Vector3(Random.Range(0.0f, RAIN_AREA) - RAIN_AREA_HALF, RAIN_HEIGHT, Random.Range(0.0f, RAIN_AREA) - RAIN_AREA_HALF) + birth_pos;
+            vert = mBirthPos + rain.birth_pos;
+            verts[id.x] = vert;
+            verts[id.x + 1] = vert + rain.size_offset_pos1;
+            verts[id.x + 2] = vert + rain.size_offset_pos2;
+            verts[id.x + 3] = vert + rain.size_offset_pos3;
+        }
+        float3 center = (verts[id.x] + verts[id.x + 2]) / 2;
+        //normals[id.x] = center;
+        //normals[id.x + 1] = center;
+        //normals[id.x + 2] = center;
+        //normals[id.x + 3] = center;
+    }
+}

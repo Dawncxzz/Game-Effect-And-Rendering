@@ -1,6 +1,6 @@
 ﻿Shader "Q/Scene/FlagWind" {
 	Properties {
-		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
+		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {} 
 		_Wind("XYZ各个轴偏移 W偏移权重",Vector) = (1,1,1,1)
 		_WindEdgeFlutter("幅度", float) = 0.5
 		_WindEdgeFlutterFreqScale("频率",float) = 0.5

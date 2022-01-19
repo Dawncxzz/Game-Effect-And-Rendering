@@ -1,4 +1,4 @@
-void SpecTrum(inout half3 albedo,half fresnel,half NdotV,half smoothness,half mask)
+void SpecTrum(inout half3 albedo,half fresnel,half NdotV,half smoothness,half mask) 
 {
     half ff = max(0.04,pow(fresnel, _SpectrumParam.x));
     half rough = lerp(1,smoothness,_SpectrumParam.y);

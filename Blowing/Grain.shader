@@ -2,7 +2,7 @@ Shader "Unlit/Grain"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
+        _MainTex ("Texture", 2D) = "white" {} 
         _Mask ("Mask", 2D) = "gray" {}
         _FlowMap ("_FlowMap", 2D) = "black" {}
 

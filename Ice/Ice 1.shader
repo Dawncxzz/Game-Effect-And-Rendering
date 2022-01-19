@@ -34,7 +34,7 @@ Shader "Unlit/Ice1"
         _EnvSpecInt      ("Envornment Specular Intensity", Range(0, 5))  = 0.2
 
         [Header(Cubemap Texture)]
-        _CubeMap         ("Cube Map", Cube)                              = "_Skybox"{}
+        _CubeMap         ("Cube Map", Cube)                              = "_Skybox"{} 
         _CubemapMip      ("Cubemap Mip", Range(0, 7))                    = 0
         
         [Header(Depth Texture)]

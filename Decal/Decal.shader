@@ -2,7 +2,7 @@ Shader "Unlit/Decal"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
+        _MainTex ("Texture", 2D) = "white" {} 
     }
     SubShader
     {
@@ -39,7 +39,7 @@ Shader "Unlit/Decal"
 	            v2f o;
 	            o.pos = UnityObjectToClipPos (v.vertex);
 	            o.screenUV = ComputeScreenPos (o.pos);
-	            //»ñÈ¡¶¥µãµÄÏà»ú¿Õ¼äÎ»ÖÃ£¬Í¬Ê±Ïà»ú¿Õ¼äÎªÓÒÊÖ×ø±êÏµ£¬zÈ¡·´
+	            //è·å–é¡¶ç‚¹çš„ç›¸æœºç©ºé—´ä½ç½®ï¼ŒåŒæ—¶ç›¸æœºç©ºé—´ä¸ºå³æ‰‹åæ ‡ç³»ï¼Œzå–å
 	            o.ray = UnityObjectToViewPos(v.vertex).xyz * float3(1, 1, -1);
 	            return o;
             }
@@ -47,28 +47,28 @@ Shader "Unlit/Decal"
             
             float4 frag(v2f i) : SV_Target
             {
-	            //¸ù¾İÉäÏß·½ÏòÖØĞÂÓ³Éäµ½Ô¶²ÃÆ½Ãæ
+	            //æ ¹æ®å°„çº¿æ–¹å‘é‡æ–°æ˜ å°„åˆ°è¿œè£å¹³é¢
 	            i.ray = i.ray * (_ProjectionParams.z / i.ray.z);
-	            //ÆÁÄ»´Ó0µ½wÖØĞÂÓ³Éäµ½0µ½1
+	            //å±å¹•ä»0åˆ°wé‡æ–°æ˜ å°„åˆ°0åˆ°1
 	            float2 uv = i.screenUV.xy / i.screenUV.w;
 
-	            //»ñÈ¡Ïà»úµÄÉî¶ÈÍ¼£¬²¢¸ù¾İuv²ÉÑù
+	            //è·å–ç›¸æœºçš„æ·±åº¦å›¾ï¼Œå¹¶æ ¹æ®uvé‡‡æ ·
 	            float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv);
 
-	            // Òª×ª»»³ÉÏßĞÔµÄÉî¶ÈÖµ
+	            // è¦è½¬æ¢æˆçº¿æ€§çš„æ·±åº¦å€¼
 	            depth = Linear01Depth (depth);
 	
-	            //Ïà»ú¿Õ¼äÖØĞÂÓ³Éäµ½ÒªÌùµÄÎïÌå±íÃæ
+	            //ç›¸æœºç©ºé—´é‡æ–°æ˜ å°„åˆ°è¦è´´çš„ç‰©ä½“è¡¨é¢
 	            float4 vpos = float4(i.ray * depth,1);
 
-	            //¿Õ¼ä×ª»¯
+	            //ç©ºé—´è½¬åŒ–
 	            float3 wpos = mul (unity_CameraToWorld, vpos).xyz;
 	            float3 opos = mul (unity_WorldToObject, float4(wpos,1)).xyz;
 
-	            //Õâ¸öÀı×ÓÊÇÓÃÁ¢·½ÌåÀ´×÷ÎªÌù»¨µÄÄ£ĞÍ£¬ËùÒÔÒª½«Ä£ĞÍ¿Õ¼äÏÂÁ¢·½ÌåÍâµÄrepeatÌù»¨²Ã¼ôµô
+	            //è¿™ä¸ªä¾‹å­æ˜¯ç”¨ç«‹æ–¹ä½“æ¥ä½œä¸ºè´´èŠ±çš„æ¨¡å‹ï¼Œæ‰€ä»¥è¦å°†æ¨¡å‹ç©ºé—´ä¸‹ç«‹æ–¹ä½“å¤–çš„repeatè´´èŠ±è£å‰ªæ‰
 	            clip (float3(0.5,0.5,0.5) - abs(opos.xyz));
 
-	            // ×ª»»µ½ [0,1] Çø¼ä 
+	            // è½¬æ¢åˆ° [0,1] åŒºé—´ 
 	            float2 texUV = opos.xz + 0.5;
 
 	            float4 col = tex2D (_MainTex, texUV);

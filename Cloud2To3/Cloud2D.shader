@@ -69,7 +69,7 @@ Shader "Unlit/Cloud2D"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 dirttex = tex2D(_MainTex, i.uv);
+                fixed4 dirttex = tex2D(_MainTex, i.uv); 
                 //获取mask图
                 fixed3 mask1 = tex2D(_Mask1, i.uv).rgb; //right,top,front
                 fixed3 mask2 = tex2D(_Mask2, i.uv).rgb; //left,bottom,back

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteAlways]
-public class DayAndNight : MonoBehaviour
+public class DayAndNight : MonoBehaviour 
 {
 
     public Light light;

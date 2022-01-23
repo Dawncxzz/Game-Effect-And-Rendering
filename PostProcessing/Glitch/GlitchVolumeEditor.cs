@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor.Rendering;
+#endif
 using UnityEngine;
-
+#if UNITY_EDITOR
 [VolumeComponentEditor(typeof(GlitchVolume))]
 public class GlitchVolumeEditor : VolumeComponentEditor
 {
@@ -140,3 +142,4 @@ public class GlitchVolumeEditor : VolumeComponentEditor
         }
     }
 }
+#endif

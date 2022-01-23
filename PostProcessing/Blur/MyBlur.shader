@@ -88,6 +88,21 @@ Shader "Unlit/MyBlur"
                 }
             #endif
 
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            Varyings FullscreenVert (appdata v)
+            {
+                Varyings o;
+                o.positionCS = TransformObjectToHClip(v.vertex);
+				//uv直接传过去即可
+                o.uv=v.uv;
+                
+                return o;
+            }
 
             half4 frag (Varyings input) : SV_Target
             {

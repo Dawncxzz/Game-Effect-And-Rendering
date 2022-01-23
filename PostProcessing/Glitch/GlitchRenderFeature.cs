@@ -79,10 +79,6 @@ class GlitchRenderPass : ScriptableRenderPass
         renderPassEvent = evt;
         glitchMaterial = blitMaterial;
     }
-    public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
-    {
-
-    }
 
     // Here you can implement the rendering logic.
     // Use <c>ScriptableRenderContext</c> to issue drawing commands or execute command buffers
@@ -109,11 +105,6 @@ class GlitchRenderPass : ScriptableRenderPass
         UpdateMaterial(context, ref renderingData);
     }
 
-    // Cleanup any allocated resources that were created during the execution of this render pass.
-    public override void OnCameraCleanup(CommandBuffer cmd)
-    {
-
-    }
 
     public void Setup(ScriptableRenderer m_Renderer)
     {
@@ -125,7 +116,7 @@ class GlitchRenderPass : ScriptableRenderPass
         RenderTextureDescriptor desc = renderingData.cameraData.cameraTargetDescriptor;
         int width = desc.width;
         int height = desc.height;
-        switch (m_GlitchVolume.mode.value)
+        switch (m_GlitchVolume.mode.value) 
         {
             case GlitchVolume.GlitchMode.None:
                 break;
@@ -135,7 +126,7 @@ class GlitchRenderPass : ScriptableRenderPass
                 Shader.SetGlobalFloat(_RGBSPLITGLITCH_Amplitude, m_GlitchVolume._RGBSPLITGLITCH_Amplitude.value);
                 cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
                 cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
-                cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
                 cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, glitchMaterial);
                 break;
             case GlitchVolume.GlitchMode._IMAGEBLOCKGLITCH:
@@ -144,7 +135,7 @@ class GlitchRenderPass : ScriptableRenderPass
                 Shader.SetGlobalVector(_IMAGEBLOCKGLITCH_MaxRGBSplit, m_GlitchVolume._IMAGEBLOCKGLITCH_MaxRGBSplit.value);
                 cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
                 cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
-                cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
                 cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, glitchMaterial);
                 break;
             case GlitchVolume.GlitchMode._LINEBLOCKGLITCH:
@@ -155,7 +146,7 @@ class GlitchRenderPass : ScriptableRenderPass
                 Shader.SetGlobalFloat(_LINEBLOCKGLITCH_Alpha, m_GlitchVolume._LINEBLOCKGLITCH_Alpha.value);
                 cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
                 cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
-                cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
                 cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, glitchMaterial);
                 break;
             case GlitchVolume.GlitchMode._TILEJITTERGLITCH:
@@ -166,7 +157,7 @@ class GlitchRenderPass : ScriptableRenderPass
                 Shader.SetGlobalFloat(_LINEBLOCKGLITCH_Alpha, m_GlitchVolume._LINEBLOCKGLITCH_Alpha.value);
                 cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
                 cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
-                cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
                 cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, glitchMaterial);
                 break;
             case GlitchVolume.GlitchMode._SCANLINEJITTERGLITCH:
@@ -175,7 +166,7 @@ class GlitchRenderPass : ScriptableRenderPass
                 Shader.SetGlobalFloat(_SCANLINEJITTERGLITCH_Frequency, m_GlitchVolume._SCANLINEJITTERGLITCH_Frequency.value);
                 cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
                 cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
-                cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
                 cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, glitchMaterial);
                 break;
             case GlitchVolume.GlitchMode._DIGITALSTRIPEGLITCH:
@@ -186,7 +177,7 @@ class GlitchRenderPass : ScriptableRenderPass
                 Shader.SetGlobalFloat(_DIGITALSTRIPEGLITCH_StripColorAdjustIndensity, m_GlitchVolume._DIGITALSTRIPEGLITCH_StripColorAdjustIndensity.value);
                 cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
                 cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
-                cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
                 cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, glitchMaterial);
                 break;
             case GlitchVolume.GlitchMode._ANALOGNOISEGLITCH:
@@ -195,14 +186,14 @@ class GlitchRenderPass : ScriptableRenderPass
                 Shader.SetGlobalFloat(_SCREENJUMPGLITCH_JumpIndensity, m_GlitchVolume._SCREENJUMPGLITCH_JumpIndensity.value);
                 cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
                 cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
-                cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
                 cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, glitchMaterial);
                 break;
             case GlitchVolume.GlitchMode._SCREENSHAKEGLITCH:
                 Shader.SetGlobalFloat(_SCREENSHAKEGLITCH_ScreenShake, m_GlitchVolume._SCREENSHAKEGLITCH_ScreenShake.value);
                 cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
                 cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
-                cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
                 cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, glitchMaterial);
                 break;
             case GlitchVolume.GlitchMode._WAVEJITTERGLITCH:

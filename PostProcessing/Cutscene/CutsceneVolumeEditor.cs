@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor.Rendering;
+#endif
 using UnityEngine;
-
+#if UNITY_EDITOR
 [VolumeComponentEditor(typeof(CutsceneVolume))]
 public class CutsceneVolumeEditor : VolumeComponentEditor
 {
@@ -17,8 +19,18 @@ public class CutsceneVolumeEditor : VolumeComponentEditor
 
     SerializedDataParameter _GRAYSCALE_Value;
 
-    
+    SerializedDataParameter _DENSEFOG1_MainTex;
+    SerializedDataParameter _DENSEFOG1_FlowMapTex;
+    SerializedDataParameter _DENSEFOG1_Offset;
+    SerializedDataParameter _DENSEFOG1_Speed;
+    SerializedDataParameter _DENSEFOG1_Intensity;
 
+    SerializedDataParameter _DENSEFOG2_Mask;
+    SerializedDataParameter _DENSEFOG2_Noise;
+    SerializedDataParameter _DENSEFOG2_Noise1Params;
+    SerializedDataParameter _DENSEFOG2_Noise2Params;
+    SerializedDataParameter _DENSEFOG2_Color1;
+    SerializedDataParameter _DENSEFOG2_Color2;
 
     public override void OnEnable()
     {
@@ -33,6 +45,23 @@ public class CutsceneVolumeEditor : VolumeComponentEditor
         _CLOCKWIPE_Blend = Unpack(o.Find(x => x._CLOCKWIPE_Blend));
 
         _GRAYSCALE_Value = Unpack(o.Find(x => x._GRAYSCALE_Value));
+
+        _DENSEFOG1_MainTex = Unpack(o.Find(x => x._DENSEFOG1_MainTex));
+        _DENSEFOG1_FlowMapTex = Unpack(o.Find(x => x._DENSEFOG1_FlowMapTex));
+        _DENSEFOG1_Offset = Unpack(o.Find(x => x._DENSEFOG1_Offset));
+        _DENSEFOG1_Speed = Unpack(o.Find(x => x._DENSEFOG1_Speed));
+        _DENSEFOG1_Intensity = Unpack(o.Find(x => x._DENSEFOG1_Intensity));
+
+
+
+        _DENSEFOG2_Mask = Unpack(o.Find(x => x._DENSEFOG2_Mask));
+        _DENSEFOG2_Noise = Unpack(o.Find(x => x._DENSEFOG2_Noise));
+        _DENSEFOG2_Noise1Params = Unpack(o.Find(x => x._DENSEFOG2_Noise1Params));
+        _DENSEFOG2_Noise2Params = Unpack(o.Find(x => x._DENSEFOG2_Noise2Params));
+        _DENSEFOG2_Color1 = Unpack(o.Find(x => x._DENSEFOG2_Color1));
+        _DENSEFOG2_Color2 = Unpack(o.Find(x => x._DENSEFOG2_Color2));
+
+
     }
 
     public override void OnInspectorGUI()
@@ -85,7 +114,23 @@ public class CutsceneVolumeEditor : VolumeComponentEditor
             case (int)CutsceneVolume.CutsceneMode._GRAYSCALE:
                 PropertyField(_GRAYSCALE_Value, new GUIContent("灰度"));
                 break;
+            case (int)CutsceneVolume.CutsceneMode._DENSEFOG1:
+                PropertyField(_DENSEFOG1_MainTex, new GUIContent("颜色图"));
+                PropertyField(_DENSEFOG1_FlowMapTex, new GUIContent("流动图"));
+                PropertyField(_DENSEFOG1_Offset, new GUIContent("偏移"));
+                PropertyField(_DENSEFOG1_Speed, new GUIContent("速度"));
+                PropertyField(_DENSEFOG1_Intensity, new GUIContent("扰动强度"));
+                break;
+            case (int)CutsceneVolume.CutsceneMode._DENSEFOG2:
+                PropertyField(_DENSEFOG2_Mask,  new GUIContent("遮罩图"));
+                PropertyField(_DENSEFOG2_Noise,  new GUIContent("噪声图"));
+                PropertyField(_DENSEFOG2_Noise1Params, new GUIContent("外焰(X:噪点大小 Y:速度 Z:偏移)"));
+                PropertyField(_DENSEFOG2_Noise2Params, new GUIContent("內焰(X:噪点大小 Y:速度 Z:偏移)"));
+                PropertyField(_DENSEFOG2_Color1, new GUIContent("內焰颜色"));
+                PropertyField(_DENSEFOG2_Color2, new GUIContent("外焰颜色"));
+                break;
 
         }
     }
 }
+#endif

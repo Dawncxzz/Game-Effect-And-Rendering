@@ -57,10 +57,6 @@ class MyBlurRenderPass : ScriptableRenderPass
         renderPassEvent = evt;
         myBlurMaterial = blitMaterial;
     }
-    public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
-    {
-
-    }
 
     // Here you can implement the rendering logic.
     // Use <c>ScriptableRenderContext</c> to issue drawing commands or execute command buffers
@@ -87,12 +83,6 @@ class MyBlurRenderPass : ScriptableRenderPass
         UpdateMaterial(context, ref renderingData);
     }
 
-    // Cleanup any allocated resources that were created during the execution of this render pass.
-    public override void OnCameraCleanup(CommandBuffer cmd)
-    {
-
-    }
-
     public void Setup(ScriptableRenderer m_Renderer)
     {
         this.m_Renderer = m_Renderer;
@@ -117,10 +107,10 @@ class MyBlurRenderPass : ScriptableRenderPass
                 for (int i = 1; i <= m_MyBlurVolume._GAUSSIANBLUR_Iterations.value; i++)
                 {
                     cmd.SetGlobalVector(_GAUSSIANBLUR_Offsets, new Vector4(m_MyBlurVolume._GAUSSIANBLUR_Offsets.value / width, 0, 0, 0));
-                    cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget1);
+                    cmd.SetGlobalTexture("_SourceTex", TempTarget1);
                     cmd.Blit(TempTarget1, TempTarget2, myBlurMaterial);
                     cmd.SetGlobalVector(_GAUSSIANBLUR_Offsets, new Vector4(0, m_MyBlurVolume._GAUSSIANBLUR_Offsets.value / height, 0, 0));
-                    cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget2);
+                    cmd.SetGlobalTexture("_SourceTex", TempTarget2);
                     cmd.Blit(TempTarget2, TempTarget1, myBlurMaterial);
                 }
                 cmd.Blit(TempTarget1, m_Renderer.cameraColorTarget);
@@ -140,12 +130,12 @@ class MyBlurRenderPass : ScriptableRenderPass
                     Vector4 BlurRadius = new Vector4(m_MyBlurVolume._BOXBLUR_BlurOffset.value / (float)width, m_MyBlurVolume._BOXBLUR_BlurOffset.value / (float)height, 0, 0);
                     // RT1 -> RT2
                     cmd.SetGlobalVector(_BOXBLUR_BlurOffset, BlurRadius);
-                    cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget1);
+                    cmd.SetGlobalTexture("_SourceTex", TempTarget1);
                     cmd.Blit(TempTarget1, TempTarget2, myBlurMaterial);
                     
                     // RT2 -> RT1
                     cmd.SetGlobalVector(_BOXBLUR_BlurOffset, BlurRadius);
-                    cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget2);
+                    cmd.SetGlobalTexture("_SourceTex", TempTarget2);
                     cmd.Blit(TempTarget2, TempTarget1, myBlurMaterial);
                 }
                 cmd.Blit(TempTarget1, m_Renderer.cameraColorTarget);
@@ -165,7 +155,7 @@ class MyBlurRenderPass : ScriptableRenderPass
                 cmd.SetGlobalFloat(_BOKEHBLUR_Iteration, m_MyBlurVolume._BOKEHBLUR_Iteration.value);
                 cmd.SetGlobalFloat(_BOKEHBLUR_Radius, m_MyBlurVolume._BOKEHBLUR_Radius.value);
                 cmd.SetGlobalVector(_BOKEHBLUR_PixelSize, new Vector2(1f / width, 1f / height));
-                cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget1);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget1);
                 cmd.Blit(TempTarget1, m_Renderer.cameraColorTarget, myBlurMaterial);
                 break;
             case MyBlurVolume.BlurMode._TILTSHIFTBLUR:

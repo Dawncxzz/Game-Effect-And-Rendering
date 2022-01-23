@@ -50,15 +50,27 @@ class CutsceneRenderPass : ScriptableRenderPass
 
     static readonly int _GRAYSCALE_Value = Shader.PropertyToID("_GRAYSCALE_Value");
 
+    static readonly int _DENSEFOG1_MainTex = Shader.PropertyToID("_DENSEFOG1_MainTex");
+    static readonly int _DENSEFOG1_FlowMapTex = Shader.PropertyToID("_DENSEFOG1_FlowMapTex");
+    static readonly int _DENSEFOG1_Offset = Shader.PropertyToID("_DENSEFOG1_Offset");
+    static readonly int _DENSEFOG1_Speed = Shader.PropertyToID("_DENSEFOG1_Speed");
+    static readonly int _DENSEFOG1_Intensity = Shader.PropertyToID("_DENSEFOG1_Intensity");
+
+    static readonly int _DENSEFOG2_Mask = Shader.PropertyToID("_DENSEFOG2_Mask");
+    static readonly int _DENSEFOG2_Noise = Shader.PropertyToID("_DENSEFOG2_Noise");
+    static readonly int _DENSEFOG2_Noise1Params = Shader.PropertyToID("_DENSEFOG2_Noise1Params");
+    static readonly int _DENSEFOG2_Noise2Params = Shader.PropertyToID("_DENSEFOG2_Noise2Params");
+    static readonly int _DENSEFOG2_Color1 = Shader.PropertyToID("_DENSEFOG2_Color1");
+    static readonly int _DENSEFOG2_Color2 = Shader.PropertyToID("_DENSEFOG2_Color2");
+
+
+
     public CutsceneRenderPass(RenderPassEvent evt, Material blitMaterial)
     {
         renderPassEvent = evt;
         cutsceneMaterial = blitMaterial;
     }
-    public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
-    {
-        
-    }
+
 
     // Here you can implement the rendering logic.
     // Use <c>ScriptableRenderContext</c> to issue drawing commands or execute command buffers
@@ -86,10 +98,6 @@ class CutsceneRenderPass : ScriptableRenderPass
 
     }
 
-    // Cleanup any allocated resources that were created during the execution of this render pass.
-    public override void OnCameraCleanup(CommandBuffer cmd)
-    {
-    }
     public void Setup(ScriptableRenderer m_Renderer)
     {
         this.m_Renderer = m_Renderer;
@@ -110,7 +118,7 @@ class CutsceneRenderPass : ScriptableRenderPass
                 Shader.SetGlobalFloat(_FLIPOVER_Progress, m_CutsceneVolume._FLIPOVER_Progress.value);
                 cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
                 cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
-                cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
                 cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, cutsceneMaterial);
                 break;
             case CutsceneVolume.CutsceneMode._CLOCKWIPE:
@@ -118,7 +126,7 @@ class CutsceneRenderPass : ScriptableRenderPass
                 Shader.SetGlobalFloat(_CLOCKWIPE_Blend, m_CutsceneVolume._CLOCKWIPE_Blend.value);
                 cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
                 cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
-                cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
                 cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, cutsceneMaterial);
                 break;
             case CutsceneVolume.CutsceneMode._DOUBLECLOCKWIPE:
@@ -157,7 +165,30 @@ class CutsceneRenderPass : ScriptableRenderPass
                 Shader.SetGlobalFloat(_GRAYSCALE_Value, m_CutsceneVolume._GRAYSCALE_Value.value);
                 cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
                 cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
-                cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
+                cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, cutsceneMaterial);
+                break;
+            case CutsceneVolume.CutsceneMode._DENSEFOG1:
+                Shader.SetGlobalTexture(_DENSEFOG1_MainTex, m_CutsceneVolume._DENSEFOG1_MainTex.value);
+                Shader.SetGlobalTexture(_DENSEFOG1_FlowMapTex, m_CutsceneVolume._DENSEFOG1_FlowMapTex.value);
+                Shader.SetGlobalFloat(_DENSEFOG1_Offset, m_CutsceneVolume._DENSEFOG1_Offset.value);
+                Shader.SetGlobalFloat(_DENSEFOG1_Speed, m_CutsceneVolume._DENSEFOG1_Speed.value);
+                Shader.SetGlobalFloat(_DENSEFOG1_Intensity, m_CutsceneVolume._DENSEFOG1_Intensity.value);
+                cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
+                cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
+                cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, cutsceneMaterial);
+                break;
+            case CutsceneVolume.CutsceneMode._DENSEFOG2:
+                Shader.SetGlobalTexture(_DENSEFOG2_Mask, m_CutsceneVolume._DENSEFOG2_Mask.value);
+                Shader.SetGlobalTexture(_DENSEFOG2_Noise, m_CutsceneVolume._DENSEFOG2_Noise.value);
+                Shader.SetGlobalVector(_DENSEFOG2_Noise1Params, m_CutsceneVolume._DENSEFOG2_Noise1Params.value);
+                Shader.SetGlobalVector(_DENSEFOG2_Noise2Params, m_CutsceneVolume._DENSEFOG2_Noise2Params.value);
+                Shader.SetGlobalColor(_DENSEFOG2_Color1, m_CutsceneVolume._DENSEFOG2_Color1.value);
+                Shader.SetGlobalColor(_DENSEFOG2_Color2, m_CutsceneVolume._DENSEFOG2_Color2.value);
+                cmd.GetTemporaryRT(TempTarget, width, height, 0, FilterMode.Bilinear, desc.colorFormat);
+                cmd.Blit(m_Renderer.cameraColorTarget, TempTarget);
+                cmd.SetGlobalTexture("_SourceTex", TempTarget);
                 cmd.Blit(TempTarget, m_Renderer.cameraColorTarget, cutsceneMaterial);
                 break;
             default:

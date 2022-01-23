@@ -30,6 +30,8 @@ public class CutsceneVolume : VolumeComponent, IPostProcessComponent
         _RANDOMBLOCKS,
         _RANDOMBWIPE,
         _GRAYSCALE,
+        _DENSEFOG1,
+        _DENSEFOG2,
     }
 
     [Tooltip("选择一个转场模式")]
@@ -45,6 +47,26 @@ public class CutsceneVolume : VolumeComponent, IPostProcessComponent
 
     [Header("灰度")]
     public ClampedFloatParameter _GRAYSCALE_Value = new ClampedFloatParameter(0, 0, 1, true);
+
+    [Header("迷雾效果1")]
+
+    public TextureParameter _DENSEFOG1_MainTex = new TextureParameter(null, true);
+    public TextureParameter _DENSEFOG1_FlowMapTex = new TextureParameter(null, true);
+    public ClampedFloatParameter _DENSEFOG1_Offset = new ClampedFloatParameter(0, 0.01f, 1, true);
+    public MinFloatParameter _DENSEFOG1_Speed = new MinFloatParameter(0, 0, true);
+    public MinFloatParameter _DENSEFOG1_Intensity = new MinFloatParameter(0, 0, true);
+
+
+
+
+    [Header("迷雾效果2")]
+    public TextureParameter _DENSEFOG2_Mask = new TextureParameter(null, true);
+    public TextureParameter _DENSEFOG2_Noise = new TextureParameter(null, true);
+    public Vector3Parameter _DENSEFOG2_Noise1Params = new Vector3Parameter(new Vector3(0,0,0), true);
+    public Vector3Parameter _DENSEFOG2_Noise2Params = new Vector3Parameter(new Vector3(0, 0, 0), true);
+    public ColorParameter _DENSEFOG2_Color1 = new ColorParameter(Color.black, true);
+    public ColorParameter _DENSEFOG2_Color2 = new ColorParameter(Color.white, true);
+
     public bool IsActive() => mode.value != CutsceneMode.None;
     public bool IsTileCompatible() => true;
 
